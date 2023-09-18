@@ -47,19 +47,30 @@ def create_post(post: Post):
 
 @app.get("/posts/{id}")
 def get_post(id: int):
-    post = _find_post(int(id))
+    post = _find_post(id)
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} was not found.")
     return {"data": post}
 
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id):
-    index = _find_index_post(int(id))
+def delete_post(id: int):
+    index = _find_index_post(id)
     if not index:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} was not found.")
     post_list.pop(int(index))
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.put("/posts/{id}")
+def update_post(id: int, post: Post):
+    index = _find_index_post(id)
+    if not index:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} was not found.")
+    post_dict = post.dict()
+    post_dict["id"] = id
+    post_list[index] = post_dict
+    return {"data": post_dict}
 
 
 def _find_index_post(id: int):
