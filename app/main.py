@@ -1,5 +1,4 @@
-import random
-from typing import Optional
+import time
 from fastapi import FastAPI, Response, status, HTTPException
 from pydantic import BaseModel
 import psycopg2
@@ -31,13 +30,16 @@ post_list = [
 ]
 
 
-try:
-    conn = psycopg2.connect(host="localhost", database="fastapi", user="root", password="root", cursor_factory=RealDictCursor)
-    cursor = conn.cursor()
-    print("Database connection successful.")
-except Exception as error:
-    print("Connecting to database failed!")
-    print("Error:", error)
+while True:
+    try:
+        conn = psycopg2.connect(host="localhost", database="fastapi", user="root", password="root", cursor_factory=RealDictCursor)
+        cursor = conn.cursor()
+        print("Database connection successful.")
+        break
+    except Exception as error:
+        print("Connecting to database failed!")
+        print("Error:", error)
+        time.sleep(1)
 
 
 @app.get("/")
