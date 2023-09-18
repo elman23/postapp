@@ -19,5 +19,5 @@ async def get_posts():
 
 @app.post("/createpost")
 def create_posts(post: Post):
-    print(post)
-    return {"data": "new post"}
+    print(post.model_dump())
+    return {"data": post}
