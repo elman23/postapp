@@ -5,6 +5,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import random
 
+
 app = FastAPI()
 
 
@@ -32,7 +33,13 @@ post_list = [
 
 while True:
     try:
-        conn = psycopg2.connect(host="localhost", database="fastapi", user="root", password="root", cursor_factory=RealDictCursor)
+        conn = psycopg2.connect(
+            host="localhost",
+            database="fastapi",
+            user="root",
+            password="root",
+            cursor_factory=RealDictCursor
+        )
         cursor = conn.cursor()
         print("Database connection successful.")
         break
