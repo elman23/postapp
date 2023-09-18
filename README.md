@@ -24,8 +24,14 @@ pip freeze > requirements.txt
 ## Run
 
 ```bash
-uvicorn main:app
+uvicorn app.main:app --reload
 ```
+
+## Documentation
+
+Swagger built-in at: http://localhost:8000/docs.
+
+ReDoc built-in at: http://localhost:8000/redoc.
 
 ## Links
 

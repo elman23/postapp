@@ -18,18 +18,23 @@ post_list = [
     {
         "id": 1,
         "title": "My first post",
-        "content": "This is the content",
+        "content": "This is the first content",
         "published": False,
         "rating": 3
     },
     {
         "id": 2,
-        "title": "My first post",
-        "content": "This is the content",
+        "title": "My second post",
+        "content": "This is the second content",
         "published": False,
-        "rating": 3
+        "rating": 2
     }
 ]
+
+
+@app.get("/")
+async def get_posts():
+    return {"message": "Hello, World!"}
 
 
 @app.get("/posts")
