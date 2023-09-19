@@ -56,15 +56,22 @@ async def get_posts():
 
 @app.get("/posts")
 async def get_posts():
-    return {"data": post_list}
+    cursor.execute(
+        """select * from posts"""
+    )
+    posts = cursor.fetchall()
+    return {"data": posts}
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_post(post: Post):
-    post_dict = post.dict()
-    post_dict["id"] = random.randint(1, 1000)
-    post_list.append(post_dict)
-    return {"data": post_dict}
+    cursor.execute(
+        """insert into posts (title, content, published) values (%s, %s, %s) returning *""",
+        (post.title, post.content, post.published)
+    )
+    new_post = cursor.fetchone()
+    conn.commit()
+    return {"data": new_post}
 
 
 @app.get("/posts/{id}")
