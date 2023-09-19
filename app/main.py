@@ -76,7 +76,11 @@ def create_post(post: Post):
 
 @app.get("/posts/{id}")
 def get_post(id: int):
-    post = _find_post(id)
+    cursor.execute(
+        """select * from posts where id = %s""",
+        (str(id),)
+    )
+    post = cursor.fetchone()
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} was not found.")
     return {"data": post}
@@ -84,22 +88,28 @@ def get_post(id: int):
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int):
-    index = _find_index_post(id)
-    if not index:
+    cursor.execute(
+        """delete from posts where id = %s returning *""",
+        (str(id),)
+    )
+    deleted_post = cursor.fetchone()
+    conn.commit()
+    if not deleted_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} was not found.")
-    post_list.pop(int(index))
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @app.put("/posts/{id}")
 def update_post(id: int, post: Post):
-    index = _find_index_post(id)
-    if not index:
+    cursor.execute(
+        """update posts set title = %s, content = %s, published = %s returning *""",
+        (post.title, post.content, post.published)
+    )
+    updated_post = cursor.fetchone()
+    conn.commit()
+    if not updated_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} was not found.")
-    post_dict = post.dict()
-    post_dict["id"] = id
-    post_list[index] = post_dict
-    return {"data": post_dict}
+    return {"data": updated_post}
 
 
 def _find_index_post(id: int):
