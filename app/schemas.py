@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel
 from pydantic import EmailStr
@@ -46,3 +47,14 @@ class ResponseUser(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+### Token Schema ###
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    id: Optional[str]
