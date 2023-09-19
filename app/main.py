@@ -110,17 +110,3 @@ def update_post(id: int, post: Post):
     if not updated_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} was not found.")
     return {"data": updated_post}
-
-
-def _find_index_post(id: int):
-    for i, p in enumerate(post_list):
-        if p["id"] == id:
-            return i
-    return None
-
-
-def _find_post(id: int):
-    for p in post_list:
-        if p["id"] == id:
-            return p
-    return None
