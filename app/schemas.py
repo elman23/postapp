@@ -1,15 +1,48 @@
+import datetime
+
 from pydantic import BaseModel
+from pydantic import EmailStr
 
 
-class PostBase(BaseModel):
+### Incoming schemas ###
+
+class BasePost(BaseModel):
     title: str
     content: str
     published: bool = True
 
 
-class CreatePost(PostBase):
+class CreatePost(BasePost):
     pass
 
 
-class UpdatePost(PostBase):
+class UpdatePost(BasePost):
     pass
+
+
+class BaseUser(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class CreateUser(BaseUser):
+    pass
+
+
+### Outgoing schemas ###
+
+class ResponsePost(BaseModel):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class ResponseUser(BaseModel):
+    id: int
+    email: EmailStr
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
