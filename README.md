@@ -67,6 +67,11 @@ alembic downgrade [REVISION_NUMBER]
 alembic downgrade -1
 ```
 
+Automatically generate features:
+```bash
+alembic revision --autogenerate -m "[MESSAGE HERE]"
+```
+
 ## Links
 
 Tutorial: from [freeCodeCamp](https://www.youtube.com/watch?v=0sOvCWFmrtA).
