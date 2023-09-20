@@ -35,6 +35,38 @@ Swagger built-in at: http://localhost:8000/docs.
 
 ReDoc built-in at: http://localhost:8000/redoc.
 
+## Alembic
+
+```bash
+alembic init alembic
+```
+
+Configure `alembic/env.py`.
+
+```bash
+alembic revision -m "create post table"
+```
+
+Fill in the `upgrade()` and `downgrade()` functions.
+
+Apply the revision:
+```bash
+alembic current
+alembic upgrade [REVISION_NUMBER]
+```
+
+Other commands:
+```bash
+alembic heads
+alembic upgrade head 
+```
+
+Downgrade:
+```bash
+alembic downgrade [REVISION_NUMBER]
+alembic downgrade -1
+```
+
 ## Links
 
 Tutorial: from [freeCodeCamp](https://www.youtube.com/watch?v=0sOvCWFmrtA).
