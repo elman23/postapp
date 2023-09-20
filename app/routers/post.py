@@ -53,7 +53,7 @@ def update_post(id: int, post: schemas.UpdatePost, db: Session = Depends(get_db)
     post_to_update = post_query.first()
     if not post_to_update:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} was not found.")
-    if post.owner_id != current_user.id:
+    if post_to_update.owner_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to perform requested action.")
     post_query.update(post.dict(), synchronize_session=False)
     db.commit()
