@@ -66,3 +66,11 @@ class TokenData(BaseModel):
 class Vote(BaseModel):
     post_id: int
     direction: conint(le=1)
+
+
+class ResponsePostVote(BaseModel):
+    Post: ResponsePost
+    votes: int
+
+    class Config:
+        orm_mode = True
