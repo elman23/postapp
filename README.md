@@ -1,4 +1,6 @@
-# Python FastAPI
+# Post App
+
+A FastAPI project.
 
 ## Virtual environments
 
