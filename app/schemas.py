@@ -32,19 +32,21 @@ class CreateUser(BaseUser):
 
 ### Outgoing schemas ###
 
-class ResponsePost(BasePost):
-    id: int
-    created_at: datetime
-    owner_id: int
-
-    class Config:
-        orm_mode = True
-
 
 class ResponseUser(BaseModel):
     id: int
     email: EmailStr
     created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class ResponsePost(BasePost):
+    id: int
+    created_at: datetime
+    owner_id: int
+    owner: ResponseUser
 
     class Config:
         orm_mode = True
