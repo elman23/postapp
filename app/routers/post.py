@@ -19,7 +19,7 @@ async def get_posts(db: Session = Depends(get_db), current_user: int = Depends(o
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ResponsePost)
 def create_post(post: schemas.CreatePost, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-    new_post = models.Post(**post.dict())
+    new_post = models.Post(owner_id=current_user.id, **post.dict())
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
@@ -40,6 +40,8 @@ def delete_post(id: int, db: Session = Depends(get_db), current_user: int = Depe
     post = post_query.first()
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} was not found.")
+    if post.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to perform requested action.")
     post_query.delete(synchronize_session=False)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -51,6 +53,8 @@ def update_post(id: int, post: schemas.UpdatePost, db: Session = Depends(get_db)
     post_to_update = post_query.first()
     if not post_to_update:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} was not found.")
+    if post.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to perform requested action.")
     post_query.update(post.dict(), synchronize_session=False)
     db.commit()
     return post_query.first()

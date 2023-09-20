@@ -32,9 +32,10 @@ class CreateUser(BaseUser):
 
 ### Outgoing schemas ###
 
-class ResponsePost(BaseModel):
+class ResponsePost(BasePost):
     id: int
     created_at: datetime
+    owner_id: int
 
     class Config:
         orm_mode = True
