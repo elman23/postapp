@@ -72,6 +72,13 @@ Automatically generate features:
 alembic revision --autogenerate -m "[MESSAGE HERE]"
 ```
 
+## Tests
+
+Run tests with:
+```bash
+pytest
+```
+
 ## Links
 
 Tutorial: from [freeCodeCamp](https://www.youtube.com/watch?v=0sOvCWFmrtA).
