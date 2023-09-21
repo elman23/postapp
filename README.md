@@ -79,6 +79,16 @@ Run tests with:
 pytest
 ```
 
+More verbose:
+```bash
+pytest -v
+```
+
+Print:
+```bash
+pytest -v -s
+```
+
 ## Links
 
 Tutorial: from [freeCodeCamp](https://www.youtube.com/watch?v=0sOvCWFmrtA).
