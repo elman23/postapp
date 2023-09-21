@@ -15,6 +15,3 @@ def test_mult():
 
 def test_div():
     assert quot(10, 2) == 5
-
-
-test_add()
