@@ -1,4 +1,4 @@
-from app.calculations import add, sub, mult, quot
+from app.calculations import add, sub, mult, quot, BankAccount
 import pytest
 
 
@@ -44,3 +44,31 @@ def test_mult(n1, n2, expected):
 def test_div(n1, n2, expected):
     print("Testing quot...")
     assert quot(n1, n2) == expected
+
+
+def test_bank_set_initial_amount():
+    bank_account = BankAccount(50)
+    assert bank_account.balance == 50
+
+
+def test_bank_set_default_amount():
+    bank_account = BankAccount()
+    assert bank_account.balance == 0
+
+
+def test_withdraw():
+    bank_account = BankAccount(50)
+    bank_account.withdraw(20)
+    assert bank_account.balance == 30
+
+
+def test_deposit():
+    bank_account = BankAccount(50)
+    bank_account.deposit(30)
+    assert bank_account.balance == 80
+
+
+def test_collect_interest():
+    bank_account = BankAccount(50)
+    bank_account.collect_interest()
+    assert bank_account.balance == 55
