@@ -14,6 +14,10 @@ def quot(n1: int, n2: int):
     return n1 / n2
 
 
+class InsufficientAmountException(Exception):
+    pass
+
+
 class BankAccount():
     def __init__(self, starting_balance=0):
         self.balance = starting_balance
@@ -23,7 +27,7 @@ class BankAccount():
 
     def withdraw(self, amount):
         if amount > self.balance:
-            raise Exception("Insufficient money in the account!")
+            raise InsufficientAmountException("Insufficient money in the account!")
         self.balance -= amount
 
     def collect_interest(self):

@@ -1,4 +1,4 @@
-from app.calculations import add, sub, mult, quot, BankAccount
+from app.calculations import add, sub, mult, quot, BankAccount, InsufficientAmountException
 import pytest
 
 
@@ -100,5 +100,5 @@ def test_bank_transaction(bank_account, n1, n2, expected):
 
 
 def test_insufficient_funds(bank_account):
-    with pytest.raises(Exception):
+    with pytest.raises(InsufficientAmountException):
         bank_account.withdraw(70)
