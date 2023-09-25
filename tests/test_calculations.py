@@ -84,3 +84,16 @@ def test_collect_interest(bank_account):
     print("Testing collect interest for BankAccount.")
     bank_account.collect_interest()
     assert bank_account.balance == 55
+
+
+@pytest.mark.parametrize("n1, n2, expected", [
+    (10, 20, 40),
+    (30, 30, 50),
+    (100, 50, 100),
+    (10, 40, 20)
+])
+def test_bank_transaction(bank_account, n1, n2, expected):
+    print("Testing consecutive deposit and withdrawal for BankAccount.")
+    bank_account.deposit(n1)
+    bank_account.withdraw(n2)
+    assert bank_account.balance == expected
