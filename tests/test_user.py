@@ -7,6 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.database import get_db, Base
 import pytest
+from alembic import command
 
 
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test"
@@ -32,10 +33,12 @@ def client():
     # Run code before test run
     Base.metadata.drop_all(bind=engine)  # Drop database tables
     Base.metadata.create_all(bind=engine)  # Generate database tables
+    # command.upgrade(head) # Alembic version
     # Yield client
     yield TestClient(app)
     # Run code after test finishes
     # Base.metadata.drop_all(bind=engine)  # Drop database tables
+    # command.downgrade(base)
 
 
 def test_root(client):
