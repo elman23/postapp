@@ -89,6 +89,16 @@ Print:
 pytest -v -s
 ```
 
+Disable warnings:
+```bash
+pytest --disable-warnings
+```
+
+Stop after first test failure:
+```bash
+pytest -x
+```
+
 ## Links
 
 Tutorial: from [freeCodeCamp](https://www.youtube.com/watch?v=0sOvCWFmrtA).
