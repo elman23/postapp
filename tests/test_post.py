@@ -5,7 +5,7 @@ from app import schemas
 
 def test_get_all_post(authorized_client, test_posts):
     print("Testing get all posts...")
-    response = authorized_client.get("/posts")
+    response = authorized_client.get("/posts/")
     posts = [schemas.ResponsePostVote(**post) for post in response.json()]
     assert posts
     assert len(posts) == len(test_posts)
@@ -14,7 +14,7 @@ def test_get_all_post(authorized_client, test_posts):
 
 def test_unauthorized_user_get_all_posts(client, test_posts):
     print("Testing unauthorized client getting all posts...")
-    response = client.get("/posts")
+    response = client.get("/posts/")
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
@@ -50,7 +50,7 @@ def test_authorized_get_one_post(authorized_client, test_posts):
     ("Hi there!", "Hi there!", False),
 ])
 def test_create_post(authorized_client, test_user, title, content, published):
-    response = authorized_client.post("/posts", json={"title": title, "content": content, "published": published})
+    response = authorized_client.post("/posts/", json={"title": title, "content": content, "published": published})
     assert response.status_code == status.HTTP_201_CREATED
     post = schemas.ResponsePost(**response.json())
     assert post.title == title
@@ -62,7 +62,7 @@ def test_create_post(authorized_client, test_user, title, content, published):
 def test_create_post_default_published(authorized_client, test_user):
     title = "Test title"
     content = "Test content"
-    response = authorized_client.post("/posts", json={"title": title, "content": content})
+    response = authorized_client.post("/posts/", json={"title": title, "content": content})
     assert response.status_code == status.HTTP_201_CREATED
     post = schemas.ResponsePost(**response.json())
     assert post.title == title
@@ -75,7 +75,7 @@ def test_unauthorized_user_create_post(client, test_user):
     print("Testing unauthorized client creating a post...")
     title = "Test title"
     content = "Test content"
-    response = client.post("/posts", json={"title": title, "content": content})
+    response = client.post("/posts/", json={"title": title, "content": content})
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 

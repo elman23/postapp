@@ -14,7 +14,7 @@ def test_root(client):
 
 def test_create_user(client):
     print("Testing user creation...")
-    response = client.post("/users", json={"email": "test@email.com", "password": "password"})
+    response = client.post("/users/", json={"email": "test@email.com", "password": "password"})
     new_user = schemas.ResponseUser(**response.json())
     assert new_user.email == "test@email.com"
     assert response.status_code == status.HTTP_201_CREATED
