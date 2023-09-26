@@ -1,3 +1,4 @@
+import pytest
 from fastapi import status
 from app import schemas
 
@@ -40,3 +41,19 @@ def test_authorized_get_one_post(authorized_client, test_posts):
     assert post.Post.title == test_post.title
     assert post.Post.content == test_post.content
 
+
+@pytest.mark.parametrize("title, content, published", [
+    ("Awesome title", "Awesome content", False),
+    ("Pizzas", "Favourite pizza: pineapple", True),
+    ("Skyscrapers", "Tallest skyscraper", False),
+    ("Odd", "Odd content", True),
+    ("Hi there!", "Hi there!", False),
+])
+def test_create_post(authorized_client, test_user, title, content, published):
+    response = authorized_client.post("/posts", json={"title": title, "content": content, "published": published})
+    assert response.status_code == status.HTTP_201_CREATED
+    post = schemas.ResponsePost(**response.json())
+    assert post.title == title
+    assert post.content == content
+    assert post.published == published
+    assert post.owner_id == test_user["id"]
