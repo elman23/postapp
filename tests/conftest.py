@@ -58,6 +58,7 @@ def test_posts(test_user, session):
     ]
     session.add_all([models.Post(**post) for post in posts_data])
     session.commit()
+    return session.query(models.Post).all()
 
 
 @pytest.fixture
