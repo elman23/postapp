@@ -1,44 +1,6 @@
-from fastapi.testclient import TestClient
 from fastapi import status
-from app.main import app
 from app import schemas
-from app.config import settings
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from app.database import get_db, Base
-import pytest
-from alembic import command
-
-
-SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test"
-
-
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = override_get_db
-
-
-@pytest.fixture
-def client():
-    # Run code before test run
-    Base.metadata.drop_all(bind=engine)  # Drop database tables
-    Base.metadata.create_all(bind=engine)  # Generate database tables
-    # command.upgrade(head) # Alembic version
-    # Yield client
-    yield TestClient(app)
-    # Run code after test finishes
-    # Base.metadata.drop_all(bind=engine)  # Drop database tables
-    # command.downgrade(base)
+from .database import client, session
 
 
 def test_root(client):
