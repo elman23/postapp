@@ -2,18 +2,7 @@ import pytest
 from jose import jwt
 from fastapi import status
 from app import schemas
-from .database import client, session
 from app.config import settings
-
-
-@pytest.fixture
-def test_user(client):
-    user_data = {"email": "test@email.com", "password": "password"}
-    response = client.post("/users", json=user_data)
-    assert response.status_code == status.HTTP_201_CREATED
-    new_user = response.json()
-    new_user["password"] = user_data["password"]
-    return new_user
 
 
 def test_root(client):
