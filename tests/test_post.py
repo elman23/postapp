@@ -67,13 +67,37 @@ def test_create_post_default_published(authorized_client, test_user):
     post = schemas.ResponsePost(**response.json())
     assert post.title == title
     assert post.content == content
-    assert post.published == True
+    assert post.published is True
     assert post.owner_id == test_user["id"]
 
 
-def test_unauthorized_user_create_post(client):
+def test_unauthorized_user_create_post(client, test_user):
     print("Testing unauthorized client creating a post...")
     title = "Test title"
     content = "Test content"
     response = client.post("/posts", json={"title": title, "content": content})
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+def test_unauthorized_user_delete_post(client, test_user, test_posts):
+    print("Testing unauthorized client deleting a post...")
+    response = client.delete(f"/posts/{test_posts[0].id}")
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+def test_authorized_user_delete_post(authorized_client, test_user, test_posts):
+    response = authorized_client.delete(f"/posts/{test_posts[0].id}")
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+
+def test_delete_not_existing_post(authorized_client, test_user):
+    not_existent_id = 1000
+    response = authorized_client.delete(f"/posts/{not_existent_id}")
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+def test_delete_other_users_post(authorized_client, test_user, test_other_user, test_posts):
+    other_users_post = [post for post in test_posts if post.owner_id == test_other_user["id"]]
+    other_users_post_id = other_users_post[0].id
+    response = authorized_client.delete(f"/posts/{other_users_post_id}")
+    assert response.status_code == status.HTTP_403_FORBIDDEN

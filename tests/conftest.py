@@ -50,11 +50,23 @@ def test_user(client):
 
 
 @pytest.fixture
-def test_posts(test_user, session):
+def test_other_user(client):
+    user_data = {"email": "other@email.com", "password": "password"}
+    response = client.post("/users", json=user_data)
+    assert response.status_code == status.HTTP_201_CREATED
+    new_user = response.json()
+    new_user["password"] = user_data["password"]
+    return new_user
+
+
+@pytest.fixture
+def test_posts(test_user, test_other_user, session):
     posts_data = [
         {"title": "First post", "content": "First content", "owner_id": test_user["id"]},
         {"title": "Second post", "content": "Second content", "owner_id": test_user["id"]},
-        {"title": "Third post", "content": "Third content", "owner_id": test_user["id"]}
+        {"title": "Third post", "content": "Third content", "owner_id": test_user["id"]},
+        {"title": "Fourth post", "content": "Fourth content", "owner_id": test_other_user["id"]},
+        {"title": "Fifth post", "content": "Fifth content", "owner_id": test_other_user["id"]}
     ]
     session.add_all([models.Post(**post) for post in posts_data])
     session.commit()
