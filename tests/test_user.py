@@ -1,3 +1,4 @@
+import pytest
 from jose import jwt
 from fastapi import status
 from app import schemas
@@ -30,8 +31,14 @@ def test_login_user(client, test_user):
     assert login_response.token_type == "bearer"
 
 
-def test_incorrect_login(client, test_user):
+@pytest.mark.parametrize("email, password, status_code", [
+    ("test@email.com", "wrong", status.HTTP_403_FORBIDDEN),
+    ("wrong@email.com", "password", status.HTTP_403_FORBIDDEN),
+    ("wrong@email.com", "wrong", status.HTTP_403_FORBIDDEN),
+    (None, "password", status.HTTP_422_UNPROCESSABLE_ENTITY),
+    ("test@email.com", None, status.HTTP_422_UNPROCESSABLE_ENTITY)
+])
+def test_incorrect_login(client, email, password, status_code):
     print("Testing incorrect user login...")
-    response = client.post("/login", data={"username": test_user["email"], "password": "wrong"})
-    assert response.status_code == status.HTTP_403_FORBIDDEN
-    assert response.json().get("detail") == "Invalid credentials"
+    response = client.post("/login", data={"username": email, "password": password})
+    assert response.status_code == status_code
