@@ -25,6 +25,19 @@ jobs:
       SECRET_KEY: ${{secrets.SECRET_KEY}}
       ALGORITHM: ${{secrets.ALGORITHM}}
       ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: ${{secret.DATABASE_PASSWORD}}
+          POSTGRES_DB: ${{secrets.DATABASE_NAME}}
+        ports:
+          - 5432:5432
+        options: >-
+          --health_cmd pg_isready
+          --health_interval 10s
+          --health_timeout 5s
+          --health_retries 5
     runs-on: ubuntu-latest
     steps:
       - name: Pulling git repo
