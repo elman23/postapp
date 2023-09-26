@@ -19,19 +19,19 @@ jobs:
     env:
       DATABASE_HOSTNAME: ${{vars.DATABASE_HOSTNAME}}
       DATABASE_PORT: ${{vars.DATABASE_PORT}}
-      DATABASE_PASSWORD: ${{vars.DATABASE_PASSWORD}}
-      DATABASE_NAME: ${{vars.DATABASE_NAME}}
-      DATABASE_USERNAME: ${{vars.DATABASE_USERNAME}}
-      SECRET_KEY: ${{vars.SECRET_KEY}}
-      ALGORITHM: ${{vars.ALGORITHM}}
+      DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+      DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+      DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
+      SECRET_KEY: ${{secrets.SECRET_KEY}}
+      ALGORITHM: ${{secrets.ALGORITHM}}
       ACCESS_TOKEN_EXPIRE_MINUTES: ${{vars.ACCESS_TOKEN_EXPIRE_MINUTES}}
     services:
       postgres:
         image: postgres
         env:
-          POSTGRES_USER: ${{vars.DATABASE_USERNAME}}
-          POSTGRES_PASSWORD: ${{vars.DATABASE_PASSWORD}}
-          POSTGRES_DB: ${{vars.DATABASE_NAME}}_test
+          POSTGRES_USER: ${{secrets.DATABASE_USERNAME}}
+          POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+          POSTGRES_DB: ${{secrets.DATABASE_NAME}}_test
         ports:
           - 5432:5432
         options: >-
@@ -55,3 +55,24 @@ jobs:
         run: |
           pip install pytest
           pytest
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKER_HUB_USERNAME}}
+          password: ${{secrets.DOCKER_HUB_ACCESS_TOKEN}}
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          builder: ${{steps.buildx.outputs.name}}
+          push: true
+          tags: ${{secrets.DOCKER_HUB_USERNAME}}/postapp:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+      - name: Image digest
+        run: echo ${{steps.docker_build.outputs.digest}}
