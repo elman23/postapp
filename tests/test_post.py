@@ -31,11 +31,12 @@ def test_authorized_get_not_existent_post(authorized_client, test_posts):
 
 
 def test_authorized_get_one_post(authorized_client, test_posts):
-    print("Testing authorized client getting not existent posts...")
+    print("Testing authorized client getting existent posts...")
     test_post = test_posts[0]
     response = authorized_client.get(f"/posts/{test_post.id}")
     assert response.status_code == status.HTTP_200_OK
     post = schemas.ResponsePostVote(**response.json())
     assert post.Post.id == test_post.id
+    assert post.Post.title == test_post.title
     assert post.Post.content == test_post.content
 
