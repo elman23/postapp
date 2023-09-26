@@ -141,5 +141,5 @@ def test_update_not_existing_post(authorized_client, test_user, test_posts):
         "content": "Updated content",
         "id": test_posts[0].id
     }
-    response = authorized_client.put(f"/posts/{not_existent_id}", json=data)
+    response = authorized_client.put(f"/posts/{not_existent_id}/", json=data)
     assert response.status_code == status.HTTP_404_NOT_FOUND

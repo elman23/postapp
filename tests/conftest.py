@@ -42,7 +42,7 @@ def client(session):
 @pytest.fixture
 def test_user(client):
     user_data = {"email": "test@email.com", "password": "password"}
-    response = client.post("/users", json=user_data)
+    response = client.post("/users/", json=user_data)
     assert response.status_code == status.HTTP_201_CREATED
     new_user = response.json()
     new_user["password"] = user_data["password"]
@@ -52,7 +52,7 @@ def test_user(client):
 @pytest.fixture
 def test_other_user(client):
     user_data = {"email": "other@email.com", "password": "password"}
-    response = client.post("/users", json=user_data)
+    response = client.post("/users/", json=user_data)
     assert response.status_code == status.HTTP_201_CREATED
     new_user = response.json()
     new_user["password"] = user_data["password"]
