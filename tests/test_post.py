@@ -101,3 +101,45 @@ def test_delete_other_users_post(authorized_client, test_user, test_other_user, 
     other_users_post_id = other_users_post[0].id
     response = authorized_client.delete(f"/posts/{other_users_post_id}")
     assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+def test_update_post(authorized_client, test_user, test_posts):
+    data = {
+        "title": "Updated title",
+        "content": "Updated content",
+        "id": test_posts[0].id
+    }
+    response = authorized_client.put(f"/posts/{test_posts[0].id}", json=data)
+    assert response.status_code == status.HTTP_200_OK
+    updated_post = schemas.ResponsePost(**response.json())
+    assert updated_post.title == data["title"]
+    assert updated_post.content == data["content"]
+
+
+def test_update_other_users_post(authorized_client, test_user, test_other_user, test_posts):
+    data = {
+        "title": "Updated title",
+        "content": "Updated content",
+        "id": test_posts[0].id
+    }
+    other_users_post = [post for post in test_posts if post.owner_id == test_other_user["id"]]
+    other_users_post_id = other_users_post[0].id
+    response = authorized_client.put(f"/posts/{other_users_post_id}", json=data)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+def test_unauthorized_user_update_post(client, test_user, test_posts):
+    print("Testing unauthorized client updating a post...")
+    response = client.put(f"/posts/{test_posts[0].id}")
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+def test_update_not_existing_post(authorized_client, test_user, test_posts):
+    not_existent_id = 1000
+    data = {
+        "title": "Updated title",
+        "content": "Updated content",
+        "id": test_posts[0].id
+    }
+    response = authorized_client.put(f"/posts/{not_existent_id}", json=data)
+    assert response.status_code == status.HTTP_404_NOT_FOUND
