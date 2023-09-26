@@ -18,6 +18,7 @@ def test_create_user(client):
     assert response.status_code == status.HTTP_201_CREATED
 
 
+# Bad practice: this test depends on test_create_user!
 def test_login_user(client):
     print("Testing user login...")
     response = client.post("/login", data={"username": "test@email.com", "password": "password"})
