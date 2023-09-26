@@ -1,6 +1,18 @@
+import pytest
 from fastapi import status
 from app import schemas
 from .database import client, session
+import pytest
+
+
+@pytest.fixture
+def test_user(client):
+    user_data = {"email": "test@email.com", "password": "password"}
+    response = client.post("/users", json=user_data)
+    assert response.status_code == status.HTTP_201_CREATED
+    new_user = response.json()
+    new_user["password"] = user_data["password"]
+    return new_user
 
 
 def test_root(client):
@@ -19,7 +31,7 @@ def test_create_user(client):
 
 
 # Bad practice: this test depends on test_create_user!
-def test_login_user(client):
+def test_login_user(client, test_user):
     print("Testing user login...")
-    response = client.post("/login", data={"username": "test@email.com", "password": "password"})
+    response = client.post("/login", data={"username": test_user["email"], "password": test_user["password"]})
     assert response.status_code == status.HTTP_200_OK
