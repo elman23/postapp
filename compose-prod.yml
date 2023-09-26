@@ -20,6 +20,7 @@ services:
   postgres:
     image: postgres
     environment:
+      - POSTGRES_USER=${DATABASE_USERNAME}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_DB=${DATABASE_NAME}
     volumes:
