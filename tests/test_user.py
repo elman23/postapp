@@ -1,4 +1,3 @@
-import pytest
 from jose import jwt
 from fastapi import status
 from app import schemas
@@ -20,7 +19,6 @@ def test_create_user(client):
     assert response.status_code == status.HTTP_201_CREATED
 
 
-# Bad practice: this test depends on test_create_user!
 def test_login_user(client, test_user):
     print("Testing user login...")
     response = client.post("/login", data={"username": test_user["email"], "password": test_user["password"]})
@@ -30,3 +28,10 @@ def test_login_user(client, test_user):
     id = payload.get("user_id")
     assert id == test_user["id"]
     assert login_response.token_type == "bearer"
+
+
+def test_incorrect_login(client, test_user):
+    print("Testing incorrect user login...")
+    response = client.post("/login", data={"username": test_user["email"], "password": "wrong"})
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.json().get("detail") == "Invalid credentials"
